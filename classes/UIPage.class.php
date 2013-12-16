@@ -11,8 +11,8 @@ abstract class UIPage extends Page {
 	<span>Kasutaja: {$this->user->getUsername()}</span>
 	<nav id="headermenu">
 		<a class="headerlink" href="index.php">Esileht</a>
-		<a class="headerlink" href="index.php?employee=index">Töötajate paneel</a>
-		<a class="headerlink" href="index.php?page=logout">Logi välja</a>
+		<a class="headerlink" href="index.php?employee=Index">Töötajapaneel</a>
+		<a class="headerlink" href="index.php?page=LogOut">Logi välja</a>
 	</nav>
 </header>
 

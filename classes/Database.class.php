@@ -8,6 +8,15 @@ class Database {
 	
 	private $dbh;
 	
+	private static $instance;
+	
+	public static function getInstance() {
+		if (self::$instance === null) {
+			new Database();
+		}
+		return self::$instance;
+	}
+	
 	public function __construct() {
 		$dbname = $this->db_database;
 		$host = $this->db_host;
@@ -16,6 +25,7 @@ class Database {
 			$this->dbh = new PDO(
 					"pgsql:dbname=$dbname;host=$host;port=$port", 
 					$this->db_user, $this->db_password);
+			self::$instance = $this;
 		} catch (PDOException $e) {
 			ob_clean();
 			die('Unable to establish DB connection: ' . $e->getMessage());
@@ -24,5 +34,9 @@ class Database {
 	
 	public function getDatabaseHandle() {
 		return $this->dbh;
+	}
+	
+	public function closeConnection() {
+		$this->dbh = null;
 	}
 }

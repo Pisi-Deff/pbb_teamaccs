@@ -1,17 +1,21 @@
 <?php
 
 abstract class EmployeePage extends UIPage {
+	public $baseTitleEmployee = 'Töötajapaneel';
+	
 	public function setup() {
-		if ($this->user->isEmployed()) {
-			$this->content .= $this->genEmployeeSidebar();
-			return true;
-		} else {
+		$this->baseTitle = $this->baseTitleEmployee . ' - ' . $this->baseTitle;
+		if (!$this->user->isEmployed()) {
 			$this->addMessage(new Message('Ligipääs keelatud!', 'error'));
-			return false;
+			return;
 		}
+		
+		$this->setupEmployee();
 	}
 	
-	public function genEmployeeSidebar() {
+	abstract function setupEmployee();
+	
+	public function getSidebar() {
 		$sidebar = '<nav class="sidebar">';
 		$jobs = $this->user->getJobs();
 		if (!empty($jobs[1])) {
@@ -23,10 +27,10 @@ abstract class EmployeePage extends UIPage {
 	
 	public function genTeamAccountManagerSidebar($nimetus) {
 		$sidebar = '<span class="sidebarheader">' . $nimetus . '</span><br />';
-		$sidebar .= '<a href="index.php?employee=teamaccounts">Rühmakontode nimekiri</a><br />';
-		$sidebar .= '<a href="index.php?employee=acceptedapplications">Vastuvõetud rühmakonto avaldused</a><br />';
-		$sidebar .= '<a href="index.php?employee=newteamaccount">Loo uus rühmakonto</a><br />';
-		$sidebar .= '<a href="index.php?employee=newservers">Uued mänguserverid</a><br />';
+		$sidebar .= '<a href="index.php?employee=TeamAccounts">Rühmakontode nimekiri</a><br />';
+		$sidebar .= '<a href="index.php?employee=AcceptedApplications">Vastuvõetud rühmakontoavaldused</a><br />';
+		$sidebar .= '<a href="index.php?employee=TeamAccounts&amp;action=new">Loo uus rühmakonto</a><br />';
+		$sidebar .= '<a href="index.php?employee=NewServers">Uued mänguserverid</a><br />';
 		return $sidebar;
 	}
 }

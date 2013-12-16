@@ -1,25 +1,24 @@
 <?php
 class PageFactory {
-	private $dbh;
 	private $user;
-	public function __construct($dbh, $user) {
-		$this->dbh = $dbh;
+	
+	public function __construct($user) {
 		$this->user = $user;
 	}
 	public function getPage($get, $post) {
 		$page = null;
 		$pageName = null;
 		if (!empty($get['page'])) { 
-			$pageName = ucfirst(strtolower($get['page'])) . 'Page';
+			$pageName = $get['page'] . 'Page';
 		} else if (!empty($get['employee'])) {
-			$pageName = ucfirst(strtolower($get['employee'])) . 'EmployeePage';
+			$pageName = $get['employee'] . 'EmployeePage';
 		}
 		if ($pageName !== null && class_exists($pageName)
 				&& (new ReflectionClass($pageName))->isInstantiable()) {
-			$page = new $pageName($this->dbh, $this->user);
+			$page = new $pageName($this->user, $get, $post);
 		}
 		if ($page === null) {
-			$page = new IndexPage($this->dbh, $this->user);
+			$page = new IndexPage($this->user, $get, $post);
 		}
 		return $page;
 	}

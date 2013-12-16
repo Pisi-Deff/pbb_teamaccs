@@ -6,11 +6,14 @@ abstract class Page {
 	protected $messages = array();
 	
 	protected $user;
-	protected $dbh;
 	
-	public function __construct($dbh, $user) {
-		$this->dbh = $dbh;
+	protected $get;
+	protected $post;
+	
+	public function __construct($user, $get, $post) {
 		$this->user = $user;
+		$this->get = $get;
+		$this->post = $post;
 		$this->setup();
 	}
 	
@@ -40,6 +43,10 @@ ENDCONTENT;
 		return $title;
 	}
 	
+	protected function setTitle($title) {
+		$this->title = $title;
+	}
+	
 	public function getMessages() {
 		$result = '';
 		if (!empty($this->messages)) {
@@ -50,20 +57,29 @@ ENDCONTENT;
 		return $result;
 	}
 	
-	public function getHeader() {}
+	public function getHeader() {
+		return '';
+	}
 	
 	public function addMessage($msg) {
 		$this->messages[] = $msg;
+	}
+	
+	public function getSideBar() {
+		return '';
 	}
 	
 	public function getContent() {
 		return $this->content;
 	}
 	
-	public function getFooter() {}
+	public function getFooter() {
+		return '';
+	}
 	
 	public function getHTMLFooter() {
 		return <<<ENDCONTENT
+
 </body>
 </html>
 ENDCONTENT;
@@ -72,6 +88,10 @@ ENDCONTENT;
 	public function getPage() {
 		$page = $this->getHTMLHeader() . "\n";
 		$page .= $this->getHeader() . "\n";
+		$page .= $this->getSideBar() . "\n";
+		if (!empty($this->title)) {
+			$page .= '<h1>' . $this->title . '</h1>';
+		}
 		$page .= $this->getMessages() . "\n";
 		$page .= $this->getContent() . "\n";
 		$page .= $this->getFooter() . "\n";

@@ -1,12 +1,6 @@
 <?php
 class User {
-	protected $dbh;
-	
 	private $jobs = null;
-	
-	public function __construct($dbh) {
-		$this->dbh = $dbh;
-	}
 	
 	public function isLoggedIn() {
 		return isset($_SESSION['pbb_userID']);
@@ -57,7 +51,7 @@ class User {
 	public function db_tryLogIn($username, $password) {
 		$result = null;
 		try {
-			$stmt = $this->dbh->prepare(
+			$stmt = Database::getInstance()->getDatabaseHandle()->prepare(
 					"SELECT f_logi_sisse (?, ?)");
 			$stmt->execute(array($username, $password));
 			$result = $stmt->fetch(PDO::FETCH_NUM)[0];
@@ -70,7 +64,7 @@ class User {
 	public function db_getJobs($userID) {
 		$jobs = array();
 		try {
-			$stmt = $this->dbh->prepare(
+			$stmt = Database::getInstance()->getDatabaseHandle()->prepare(
 					"SELECT * FROM f_leia_kasutaja_ametid (?)");
 			$stmt->execute(array($userID));
 			$queryResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
