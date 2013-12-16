@@ -25,33 +25,4 @@ class Database {
 	public function getDatabaseHandle() {
 		return $this->dbh;
 	}
-	
-	public function user_tryLogIn($username, $password) {
-		$result = null;
-		try {
-			$stmt = $this->dbh->prepare(
-					"SELECT f_logi_sisse (?, ?)");
-			$stmt->execute(array($username, $password));
-			$result = $stmt->fetch(PDO::FETCH_NUM)[0];
-		} catch (PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $result;
-	}
-	
-	public function user_getJobs($userID) {
-		$jobs = array();
-		try {
-			$stmt = $this->dbh->prepare(
-					"SELECT * FROM f_leia_kasutaja_ametid (?)");
-			$stmt->execute(array($userID));
-			$queryResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			foreach ($queryResult as $job) {
-				$jobs[$job['amet_id']] = $job['nimetus'];
-			}
-		} catch (PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $jobs;
-	}
 }

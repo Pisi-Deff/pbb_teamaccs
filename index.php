@@ -30,7 +30,8 @@ session_start();
 $get = clean($_GET);
 $post = clean($_POST);
 
-$dbh = new Database();
+$db = new Database();
+$dbh = $db->getDatabaseHandle();
 $user = new User($dbh);
 $pageFactory = new PageFactory($dbh, $user);
 

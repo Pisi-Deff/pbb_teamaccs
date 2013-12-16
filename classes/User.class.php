@@ -13,7 +13,7 @@ class User {
 	}
 	
 	public function tryLogIn($username, $password) {
-		$userID = $this->dbh->user_tryLogIn($username, $password);
+		$userID = $this->db_tryLogIn($username, $password);
 		if ($userID !== null) {
 			$_SESSION['pbb_userID'] = $userID;
 			$_SESSION['pbb_username'] = $username;
@@ -49,8 +49,37 @@ class User {
 	
 	public function getJobs() {
 		if ($this->isLoggedIn() && $this->jobs === null) {
-			$this->jobs = $this->dbh->user_getJobs($_SESSION['pbb_userID']);
+			$this->jobs = $this->db_getJobs($_SESSION['pbb_userID']);
 		}
 		return $this->jobs;
+	}
+	
+	public function db_tryLogIn($username, $password) {
+		$result = null;
+		try {
+			$stmt = $this->dbh->prepare(
+					"SELECT f_logi_sisse (?, ?)");
+			$stmt->execute(array($username, $password));
+			$result = $stmt->fetch(PDO::FETCH_NUM)[0];
+		} catch (PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $result;
+	}
+	
+	public function db_getJobs($userID) {
+		$jobs = array();
+		try {
+			$stmt = $this->dbh->prepare(
+					"SELECT * FROM f_leia_kasutaja_ametid (?)");
+			$stmt->execute(array($userID));
+			$queryResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			foreach ($queryResult as $job) {
+				$jobs[$job['amet_id']] = $job['nimetus'];
+			}
+		} catch (PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $jobs;
 	}
 }
