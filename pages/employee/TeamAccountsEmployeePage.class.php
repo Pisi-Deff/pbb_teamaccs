@@ -11,7 +11,7 @@ class TeamAccountsEmployeePage extends EmployeePage {
 				$this->actionList();
 				break;
 			default:
-				$this->addMessage(new Message('Tundmatu tegevus!', 'error'));
+				self::addMessage(new Message('Tundmatu tegevus!', 'error'));
 				break;
 		}
 	}
@@ -35,8 +35,8 @@ class TeamAccountsEmployeePage extends EmployeePage {
 						$teamAccount->getID());
 			}
 		}
-		$this->content .= $this->genTeamAccountForm();
-	}
+			$this->content .= $this->genTeamAccountForm();
+		}
 	
 	public function actionList() {
 		$this->setTitle('Rühmakontode nimekiri');

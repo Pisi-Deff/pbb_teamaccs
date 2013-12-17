@@ -6,7 +6,7 @@ abstract class EmployeePage extends UIPage {
 	public function setup() {
 		$this->baseTitle = $this->baseTitleEmployee . ' - ' . $this->baseTitle;
 		if (!$this->user->isEmployed()) {
-			$this->addMessage(new Message('Ligipääs keelatud!', 'error'));
+			self::addMessage(new Message('Ligipääs keelatud!', 'error'));
 			return;
 		}
 		

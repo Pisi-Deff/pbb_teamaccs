@@ -3,6 +3,9 @@ class TeamAccount {
 	protected $id;
 	
 	public function __construct($id) {
+		if ($id === null) {
+			throw new Exception('Team Account cannot have an id of null');
+		}
 		$this->id = $id;
 	}
 	
@@ -13,7 +16,6 @@ class TeamAccount {
 	public static function createNew($name, $website, $email, $status,
 			$applicationID = null) {
 		$id = self::db_create($name, $website, $email, $status, $applicationID);
-		var_dump($id);
 		if ($id !== null) {
 			return new TeamAccount($id);
 		}
@@ -29,7 +31,7 @@ class TeamAccount {
 			$stmt->execute(array($name, $website, $email, $status, $applicationID));
 			$result = $stmt->fetch(PDO::FETCH_NUM)[0];
 		} catch (PDOException $e) {
-			echo $e->getMessage();
+			Page::addMessage(new Message($e->getMessage(), 'error'));
 		}
 		return $result;
 	}
@@ -43,7 +45,7 @@ class TeamAccount {
 				$statuses[$row['rühmakonto_staatus_id']] = $row;
 			}
 		} catch (PDOException $e) {
-			echo $e->getMessage();
+			Page::addMessage(new Message($e->getMessage(), 'error'));
 		}
 		return $statuses;
 	}

@@ -5,7 +5,7 @@ class LogInPage extends Page {
 		if (isset($this->post['username']) && isset($this->post['password'])) {
 			$loginSuccess = false;
 			if (empty($this->post['username']) || empty($this->post['password'])) {
-				$this->addMessage(new Message(
+				self::addMessage(new Message(
 						'Kasutajanimi või parool sisestamata.', 'error'));
 			} else {
 				$loginSuccess = $this->user->tryLogIn(
@@ -13,7 +13,7 @@ class LogInPage extends Page {
 				if ($loginSuccess) {
 					redirectLocal();
 				} else {
-					$this->addMessage(
+					self::addMessage(
 							new Message('Sellise kasutajanime ja parooliga kasutajat ei eksisteeri.', 'error'));
 				}
 			}

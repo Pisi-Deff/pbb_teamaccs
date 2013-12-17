@@ -56,7 +56,7 @@ class User {
 			$stmt->execute(array($username, $password));
 			$result = $stmt->fetch(PDO::FETCH_NUM)[0];
 		} catch (PDOException $e) {
-			echo $e->getMessage();
+			Page::addMessage(new Message($e->getMessage(), 'error'));
 		}
 		return $result;
 	}
@@ -72,7 +72,7 @@ class User {
 				$jobs[$job['amet_id']] = $job['nimetus'];
 			}
 		} catch (PDOException $e) {
-			echo $e->getMessage();
+			Page::addMessage(new Message($e->getMessage(), 'error'));
 		}
 		return $jobs;
 	}

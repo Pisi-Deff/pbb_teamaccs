@@ -3,7 +3,7 @@ abstract class Page {
 	protected $baseTitle = 'PBBans';
 	protected $title = '';
 	protected $content = '';
-	protected $messages = array();
+	private static $messages = array();
 	
 	protected $user;
 	
@@ -49,8 +49,8 @@ ENDCONTENT;
 	
 	public function getMessages() {
 		$result = '';
-		if (!empty($this->messages)) {
-			foreach ($this->messages as $msg) {
+		if (!empty(self::$messages)) {
+			foreach (self::$messages as $msg) {
 				$result .= $msg->toHTML();
 			}
 		}
@@ -61,8 +61,8 @@ ENDCONTENT;
 		return '';
 	}
 	
-	public function addMessage($msg) {
-		$this->messages[] = $msg;
+	public static function addMessage($msg) {
+		self::$messages[] = $msg;
 	}
 	
 	public function getSideBar() {
