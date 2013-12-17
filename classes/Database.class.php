@@ -25,6 +25,7 @@ class Database {
 			$this->dbh = new PDO(
 					"pgsql:dbname=$dbname;host=$host;port=$port", 
 					$this->db_user, $this->db_password);
+			$this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			self::$instance = $this;
 		} catch (PDOException $e) {
 			ob_clean();
