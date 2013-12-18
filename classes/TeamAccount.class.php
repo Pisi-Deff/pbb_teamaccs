@@ -13,6 +13,20 @@ class TeamAccount {
 		return $this->id;
 	}
 	
+	public function db_getData() {
+		$result = null;
+		try {
+			$dbh = Database::getInstance()->getDatabaseHandle();
+			$stmt = $dbh->prepare(
+					'SELECT * FROM Rühmakontode_nimekiri WHERE Rühmakonto_ID = ?');
+			$stmt->execute(array($this->id));
+			$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch (PDOException $e) {
+			Page::addMessage(new Message($e->getMessage(), 'error'));
+		}
+		return $result;
+	}
+	
 	public static function createNew($name, $website, $email, $status,
 			$applicationID = null) {
 		$id = self::db_create($name, $website, $email, $status, $applicationID);
@@ -36,12 +50,26 @@ class TeamAccount {
 		return $result;
 	}
 	
+	public static function db_getList() {
+		$teamAccounts = array();
+		try {
+			$dbh = Database::getInstance()->getDatabaseHandle();
+			$stmt = $dbh->query('SELECT * FROM Rühmakontode_nimekiri');
+			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+				$teamAccounts[$row['rühmakonto_id']] = $row;
+			}
+		} catch (PDOException $e) {
+			Page::addMessage(new Message($e->getMessage(), 'error'));
+		}
+		return $teamAccounts;
+	}
+	
 	public static function db_getStatuses() {
 		$statuses = array();
 		try {
 			$dbh = Database::getInstance()->getDatabaseHandle();
 			$stmt = $dbh->query('SELECT * FROM rühmakonto_staatus');
-			while ($row = $stmt->fetch()) {
+			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 				$statuses[$row['rühmakonto_staatus_id']] = $row;
 			}
 		} catch (PDOException $e) {
