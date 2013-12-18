@@ -3,6 +3,7 @@ html, body {
     font-family: verdana;
     font-size: 90%;
     min-height: 100%;
+    background-color: #f5fdff;
 }
 a:link, a:visited {color: #006000;}
 a:hover {color: #4F896C;}
@@ -14,14 +15,14 @@ a {
 
 header {
     background-color: #e1e9ef;
-    border-bottom: 1px solid #b8bec3;
     padding: 5px;
+    border-bottom: 1px solid #b8bec3;
 }
-#headermenu {
+#username {
     float: right;
+    margin-right: 10px;
 }
 .headerlink {
-    padding: 5px 0;
 }
 
 .sidebar {
@@ -30,10 +31,9 @@ header {
     border-color: #b8bec3;
     float: right;
     margin-left: 5px;
-    background-color: #f4faff;
+    background-color: #e1e9ef;
     text-align: center;
     padding: 5px;
-    height: 100%;
 }
 .sidebarheader {
     border-bottom: 1px solid #b8bec3;
@@ -59,19 +59,21 @@ h1 {
 
 .content {
     padding: 5px;
-    margin-right: 5px;
+    margin: 10px;
+    background-color: #FFFCF8;
+    border: 1px solid #b8bec3;
 }
 
 #loginform {
     display: table;
     margin: 2px auto;
     text-align: center;
-    background-color: #e1e9ef;
     padding: 0;
 }
 
 fieldset {
     margin: 0;
+    border-width: 0;
 }
 
 table {
