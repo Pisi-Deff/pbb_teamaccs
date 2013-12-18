@@ -124,29 +124,32 @@ ENDCONTENT;
 		$teamAccounts = TeamAccount::db_getList();
 		$viewLinkBase = 
 				'index.php?employee=TeamAccounts&amp;action=view&amp;id=';
-		foreach ($teamAccounts as $teamAccount) {
-			$viewLink = $viewLinkBase . $teamAccount['rühmakonto_id'];
-			$websiteCell = '';
-			if (!empty($teamAccount['rühma_veebileht'])) {
-				$websiteCell = '<a href="' . $teamAccount['rühma_veebileht'] . 
-						'">' . $teamAccount['rühma_veebileht'] . '</a>';
-			}
-			$statusClass = '';
-			if ($teamAccount['rühmakonto_staatus_id'] === 1) {
-				$statusClass = 'activated';
-			} else if ($teamAccount['rühmakonto_staatus_id'] === 2) {
-				$statusClass = 'deactivated';
-			}
-			
-			$table .= '<tr>';
-			$table .= '<td><a href="' . $viewLink . '">' . 
-					$teamAccount['rühma_nimi'] . '</a></td>';
-			$table .= '<td>' . $websiteCell . '</td>';
-			$table .= '<td>' . $teamAccount['kontaktmeil'] . '</td>';
-			$table .= '<td class="' . $statusClass . '">' . 
-					$teamAccount['staatus'] . '</td>';
-			$table .= '<td><a href="' . $viewLink . '">Vaata</a></td>';
-			$table .= "</tr>\n";
+		if (!empty($teamAccounts)) {
+			foreach ($teamAccounts as $teamAccount) {
+				$viewLink = $viewLinkBase . $teamAccount['rühmakonto_id'];
+				$websiteCell = '';
+				if (!empty($teamAccount['rühma_veebileht'])) {
+					$websiteCell = '<a href="' . $teamAccount['rühma_veebileht'] . 
+							'">' . $teamAccount['rühma_veebileht'] . '</a>';
+				}
+				$statusClass = '';
+				if ($teamAccount['rühmakonto_staatus_id'] === 1) {
+					$statusClass = 'activated';
+				} else if ($teamAccount['rühmakonto_staatus_id'] === 2) {
+					$statusClass = 'deactivated';
+				}
+				$table .= <<<ENDCONTENT
+	<tr>
+		<td><a href="{$viewLink}">{$teamAccount['rühma_nimi']}</a></td>
+		<td>{$websiteCell}</td>
+		<td>{$teamAccount['kontaktmeil']}</td>
+		<td class="{$statusClass}">{$teamAccount['staatus']}</td>
+		<td><a href="{$viewLink}">Vaata</a></td>
+	</tr>
+ENDCONTENT;
+			}	
+		} else {
+			$table .= '<tr><td colspan="5">Rühmakontosid ei ole</td></tr>';
 		}
 		$table .= "</table>\n";
 		return $table;

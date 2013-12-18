@@ -17,22 +17,28 @@ class AcceptedApplicationsEmployeePage extends EmployeePage {
 	</tr>
 ENDCONTENT;
 		$applications = TeamAccountApplication::db_getList();
-		foreach ($applications as $application) {
-			$createTALink = 
-					'index.php?employee=TeamAccounts&amp;action=new&amp;application='. 
-					$application['rühmakonto_avaldus_id'];
-			$websiteCell = '';
-			if (!empty($application['rühma_veebileht'])) {
-				$websiteCell = '<a href="' . $application['rühma_veebileht'] . 
-						'">' . $application['rühma_veebileht'] . '</a>';
+		if (!empty($applications)) {
+			foreach ($applications as $application) {
+				$createTALink = 
+						'index.php?employee=TeamAccounts&amp;action=new&amp;application='. 
+						$application['rühmakonto_avaldus_id'];
+				$websiteCell = '';
+				if (!empty($application['rühma_veebileht'])) {
+					$websiteCell = '<a href="' . $application['rühma_veebileht'] . 
+							'">' . $application['rühma_veebileht'] . '</a>';
+				}
+				$table .= <<<ENDCONTENT
+	<tr>
+		<td>{$application['rühma_nimi']}</td>
+		<td>{$websiteCell}</td>
+		<td>{$application['kasutajanimi']}</td>
+		<td>{$application['meil']}</td>
+		<td><a href="{$createTALink}">Loo rühmakonto</a></td>
+	</tr>
+ENDCONTENT;
 			}
-			$table .= '<tr>';
-			$table .= '<td>' . $application['rühma_nimi'] . '</td>';
-			$table .= '<td>' . $websiteCell . '</td>';
-			$table .= '<td>' . $application['kasutajanimi'] . '</td>';
-			$table .= '<td>' . $application['meil'] . '</td>';
-			$table .= '<td><a href="' . $createTALink . '">Loo rühmakonto</a></td>';
-			$table .= "</tr>\n";
+		} else {
+			$table .= '<tr><td colspan="5">Uusi vastuvõetud rühmakontoavaldusi ei ole</td></tr>';
 		}
 		$table .= "</table>\n";
 		return $table;
