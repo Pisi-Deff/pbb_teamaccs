@@ -7,7 +7,11 @@ html, body {
 }
 a:link, a:visited {color: #006000;}
 a:hover {color: #4F896C;}
-a:active {color: #8FC9AC;}
+a:active {
+    color: #8FC9AC; 
+    position: relative;
+    top: 1px;
+}
 a {
     text-decoration: none;
     font-weight: 600;
