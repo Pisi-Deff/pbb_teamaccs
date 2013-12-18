@@ -22,18 +22,33 @@ class TeamAccountsEmployeePage extends EmployeePage {
 	public function actionNew() {
 		$this->setTitle('Loo uus rühmakonto');
 		$showForm = true;
+		$application = null;
+		$applicationID = null;
+		$name = '';
+		$website = '';
+		$email = '';
+		$status = 1;
+		if (!empty($this->get['application']) && 
+				is_numeric($this->get['application']) &&
+				($id = intval($this->get['application'])) > 0 ) {
+			$applicationID = $id;
+			$application = new TeamAccountApplication($id);
+			$data = $application->getData();
+			$name = $data['rühma_nimi'];
+			$website = $data['rühma_veebileht'];
+			$email = $data['meil'];
+		}
 		if (!empty($this->post)) {
-			$name = (empty($this->post['teamname']) ? '' : 
+			$name = (empty($this->post['teamname']) ? $name : 
 					$this->post['teamname']);
-			$website = (empty($this->post['teamwebsite']) ? '' : 
+			$website = (empty($this->post['teamwebsite']) ? $website : 
 					$this->post['teamwebsite']);
-			$email = (empty($this->post['teamemail']) ? '' : 
+			$email = (empty($this->post['teamemail']) ? $email : 
 					$this->post['teamemail']);
-			$status = (empty($this->post['teamstatus']) ? '' : 
+			$status = (empty($this->post['teamstatus']) ? $status : 
 					$this->post['teamstatus']);
-			// todo: applicaton id if sourced from application.
 			$teamAccount = TeamAccount::createNew($name, $website, 
-					$email, $status);
+					$email, $status, $application->getID());
 			if ($teamAccount !== null) {
 				redirectLocal('index.php?employee=TeamAccounts&action=view&created=1&id=' . 
 						$teamAccount->getID());
@@ -41,7 +56,8 @@ class TeamAccountsEmployeePage extends EmployeePage {
 			}
 		}
 		if ($showForm) {
-			$this->content .= $this->genTeamAccountForm();
+			$this->content .= $this->genTeamAccountForm($name, $website, 
+					$email, $status, $applicationID);
 		}
 	}
 	
@@ -155,18 +171,21 @@ ENDCONTENT;
 		return $table;
 	}
 	
-	public function genTeamAccountForm() {
+	public function genTeamAccountForm($name, $website, $email, 
+			$status, $applicationID) {
+		$applicationArg = (empty($applicationID) ? '' : 
+				'&amp;application=' . $applicationID);
 		$statusSelector = generateFormSelector(TeamAccount::db_getStatuses(), 
-				'teamstatus', 'nimetus', 1);
+				'teamstatus', 'nimetus', $status);
 		return <<<ENDCONTENT
 	<div class="content">
-	<form action="index.php?employee=TeamAccounts&amp;action=new" method="post">
+	<form action="index.php?employee=TeamAccounts&amp;action=new{$applicationArg}" method="post">
 		Rühma nimi:<br />
-		<input type="text" name="teamname" /><br />
+		<input type="text" name="teamname" value="{$name}" /><br />
 		Rühma veebileht:<br />
-		<input type="text" name="teamwebsite" /><br />
+		<input type="text" name="teamwebsite" value="{$website}" /><br />
 		Rühma kontaktmeil:<br />
-		<input type="text" name="teamemail" /><br />
+		<input type="text" name="teamemail" value="{$email}" /><br />
 		Rühma staatus:<br />
 		{$statusSelector}<br />
 		<input class="button" type="submit" name="createta" value="Loo rühmakonto" />
