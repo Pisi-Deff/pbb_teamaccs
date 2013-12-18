@@ -76,6 +76,14 @@ fieldset {
     border-width: 0;
 }
 
+.activated {
+    text-shadow: -1px 0 lightgreen, 0 1px lightgreen, 1px 0 lightgreen, 0 -1px lightgreen;
+}
+
+.deactivated {
+    text-shadow: -1px 0 lightpink, 0 1px lightpink, 1px 0 lightpink, 0 -1px lightpink;
+}
+
 table {
     margin: 5px;
     text-align: center;

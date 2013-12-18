@@ -63,6 +63,12 @@ class TeamAccountsEmployeePage extends EmployeePage {
 	private function viewTeamAccount($teamAccount) {
 		$data = $teamAccount->db_getData();
 		if (!empty($data)) {
+			$statusClass = '';
+			if ($data['rühmakonto_staatus_id'] === 1) {
+				$statusClass = 'activated';
+			} else if ($data['rühmakonto_staatus_id'] === 2) {
+				$statusClass = 'deactivated';
+			}
 			$statuses = TeamAccount::db_getStatuses();
 			$statusesSelector = generateFormSelector($statuses, 
 					'teamstatus', 'nimetus');
@@ -77,7 +83,7 @@ class TeamAccountsEmployeePage extends EmployeePage {
 		<tr><td>Nimi</td><td>{$data['rühma_nimi']}</td></tr>
 		<tr><td>Veebileht</td><td>{$data['rühma_veebileht']}</td></tr>
 		<tr><td>Kontaktmeil</td><td>{$data['kontaktmeil']}</td></tr>
-		<tr><td>Staatus</td><td>{$data['staatus']}</td></tr>
+		<tr><td>Staatus</td><td class="{$statusClass}">{$data['staatus']}</td></tr>
 		<tr class="toprow"><td colspan="2">Operatsioonid</td></tr>
 		<tr>
 			<td>Muuda staatust</td>
@@ -120,12 +126,25 @@ ENDCONTENT;
 				'index.php?employee=TeamAccounts&amp;action=view&amp;id=';
 		foreach ($teamAccounts as $teamAccount) {
 			$viewLink = $viewLinkBase . $teamAccount['rühmakonto_id'];
+			$websiteCell = '';
+			if (!empty($teamAccount['rühma_veebileht'])) {
+				$websiteCell = '<a href="' . $teamAccount['rühma_veebileht'] . 
+						'">' . $teamAccount['rühma_veebileht'] . '</a>';
+			}
+			$statusClass = '';
+			if ($teamAccount['rühmakonto_staatus_id'] === 1) {
+				$statusClass = 'activated';
+			} else if ($teamAccount['rühmakonto_staatus_id'] === 2) {
+				$statusClass = 'deactivated';
+			}
+			
 			$table .= '<tr>';
 			$table .= '<td><a href="' . $viewLink . '">' . 
 					$teamAccount['rühma_nimi'] . '</a></td>';
-			$table .= '<td>' . $teamAccount['rühma_veebileht'] . '</td>';
+			$table .= '<td>' . $websiteCell . '</td>';
 			$table .= '<td>' . $teamAccount['kontaktmeil'] . '</td>';
-			$table .= '<td>' . $teamAccount['staatus'] . '</td>';
+			$table .= '<td class="' . $statusClass . '">' . 
+					$teamAccount['staatus'] . '</td>';
 			$table .= '<td><a href="' . $viewLink . '">Vaata</a></td>';
 			$table .= "</tr>\n";
 		}
