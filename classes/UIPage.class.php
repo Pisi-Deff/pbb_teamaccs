@@ -8,7 +8,7 @@ abstract class UIPage extends Page {
 		return <<<ENDCONTENT
 
 <header>
-	<span>Kasutaja: {$this->user->getUsername()}</span>
+	<span id="username">Kasutaja: {$this->user->getUsername()}</span>
 	<nav id="headermenu">
 		<a class="headerlink" href="index.php">Esileht</a>
 		<a class="headerlink" href="index.php?employee=Index">Töötajapaneel</a>
@@ -17,5 +17,15 @@ abstract class UIPage extends Page {
 </header>
 
 ENDCONTENT;
+	}
+	
+	public function getSideBar() {
+		return '';
+	}
+	
+	public function getContent() {
+		$content = $this->getSideBar() . "\n";
+		$content .= parent::getContent();
+		return $content;
 	}
 }

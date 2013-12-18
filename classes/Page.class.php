@@ -65,12 +65,14 @@ ENDCONTENT;
 		self::$messages[] = $msg;
 	}
 	
-	public function getSideBar() {
-		return '';
-	}
-	
 	public function getContent() {
-		return $this->content;
+		$content = '';
+		if (!empty($this->title)) {
+			$content .= '<h1>' . $this->title . '</h1>';
+		}
+		$content .= $this->getMessages() . "\n";
+		$content .= $this->content;
+		return $content;
 	}
 	
 	public function getFooter() {
@@ -88,11 +90,6 @@ ENDCONTENT;
 	public function getPage() {
 		$page = $this->getHTMLHeader() . "\n";
 		$page .= $this->getHeader() . "\n";
-		$page .= $this->getSideBar() . "\n";
-		if (!empty($this->title)) {
-			$page .= '<h1>' . $this->title . '</h1>';
-		}
-		$page .= $this->getMessages() . "\n";
 		$page .= $this->getContent() . "\n";
 		$page .= $this->getFooter() . "\n";
 		$page .= $this->getHTMLFooter();
