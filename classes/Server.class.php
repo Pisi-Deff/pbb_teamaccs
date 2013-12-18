@@ -31,28 +31,6 @@ class Server {
 		}
 	}
 	
-	public static function db_getList($teamAccountID = null) {
-		$servers = array();
-		try {
-			$dbh = Database::getInstance()->getDatabaseHandle();
-			$sql = 'SELECT * FROM Mänguserverite_nimekiri';
-			if ($teamAccountID !== null) {
-				$sql .= ' WHERE Rühmakonto_ID = ?';
-			}
-			$stmt = $dbh->prepare($sql);
-			if ($teamAccountID !== null) {
-				$stmt->bind_param(1, $teamAccountID);
-			}
-			$stmt->execute();
-			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-				$servers[$row['mänguserver_id']] = $row;
-			}
-		} catch (PDOException $e) {
-			Page::addMessage(new Message($e->errorInfo[2], 'error'));
-		}
-		return $servers;
-	}
-	
 	public static function db_getListNew() {
 		$servers = array();
 		try {

@@ -27,6 +27,38 @@ class TeamAccount {
 		return $result;
 	}
 	
+	public function db_getUsers() {
+		$users = array();
+		try {
+			$dbh = Database::getInstance()->getDatabaseHandle();
+			$stmt = $dbh->prepare('SELECT * FROM Kasutajate_nimekiri ' .
+					'WHERE Rühmakonto_ID = ?');
+			$stmt->execute(array($this->getID()));
+			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+				$users[$row['kasutaja_id']] = $row;
+			}
+		} catch (PDOException $e) {
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
+		}
+		return $users;
+	}
+	
+	public function db_getServers() {
+		$servers = array();
+		try {
+			$dbh = Database::getInstance()->getDatabaseHandle();
+			$stmt = $dbh->prepare('SELECT * FROM Mänguserverite_nimekiri ' .
+					'WHERE Rühmakonto_ID = ?');
+			$stmt->execute(array($this->getID()));
+			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+				$servers[$row['mänguserver_id']] = $row;
+			}
+		} catch (PDOException $e) {
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
+		}
+		return $servers;
+	}
+	
 	public static function createNew($name, $website, $email, $status,
 			$applicationID = null) {
 		$id = self::db_create($name, $website, $email, $status, $applicationID);

@@ -6,12 +6,21 @@ class TeamAccountsEmployeePage extends EmployeePage {
 			case 'new':
 				$this->actionNew();
 				break;
-			case 'view';
-				$this->actionView();
-				break;
 			case 'list':
 			case null:
 				$this->actionList();
+				break;
+			case 'view':
+				$this->actionView();
+				break;
+			case 'edit':
+				$this->actionEdit();
+				break;
+			case 'addserver':
+				$this->actionAddServer();
+				break;
+			case 'adduser':
+				$this->actionAddUser();
 				break;
 			default:
 				self::addMessage(new Message('Tundmatu tegevus!', 'error'));
@@ -19,7 +28,7 @@ class TeamAccountsEmployeePage extends EmployeePage {
 		}
 	}
 	
-	public function actionNew() {
+	private function actionNew() {
 		$this->setTitle('Loo uus rühmakonto');
 		$showForm = true;
 		$application = null;
@@ -61,72 +70,35 @@ class TeamAccountsEmployeePage extends EmployeePage {
 		}
 	}
 	
-	public function actionView() {
-		$this->setTitle('Rühmakonto vaade');
-		if (!empty($this->get['id']) && is_numeric($this->get['id']) && 
-				($id = intval($this->get['id'])) > 0) {
-			$teamAccount = new TeamAccount($id);
-			if (!empty($this->get['created'])) {
-				self::addMessage(new Message('Rühmakonto loodi edukalt!'));
-			}
-			$this->viewTeamAccount($teamAccount);
-		} else {
-			self::addMessage(new Message(
-					'Rühmakonto ID puudub või ei ole number.', 'error'));
-		}
-	}
-	
-	private function viewTeamAccount($teamAccount) {
-		$data = $teamAccount->db_getData();
-		if (!empty($data)) {
-			$statusClass = '';
-			if ($data['rühmakonto_staatus_id'] === 1) {
-				$statusClass = 'activated';
-			} else if ($data['rühmakonto_staatus_id'] === 2) {
-				$statusClass = 'deactivated';
-			}
-			$statuses = TeamAccount::db_getStatuses();
-			$statusesSelector = generateFormSelector($statuses, 
-					'teamstatus', 'nimetus');
-			$linkBase = 'index.php?employee=TeamAccounts&amp;id=' . 
-					$teamAccount->getID() . '&amp;action=';
-			$editLink = $linkBase . 'edit';
-			$usersLink = $linkBase . 'users';
-			$serversLink = $linkBase . 'servers';
-			$this->content .= <<<ENDCONTENT
-	<table class="content">
-		<tr class="toprow"><td colspan="2">Rühma andmed</td></tr>
-		<tr><td>Nimi</td><td>{$data['rühma_nimi']}</td></tr>
-		<tr><td>Veebileht</td><td>{$data['rühma_veebileht']}</td></tr>
-		<tr><td>Kontaktmeil</td><td>{$data['kontaktmeil']}</td></tr>
-		<tr><td>Staatus</td><td class="{$statusClass}">{$data['staatus']}</td></tr>
-		<tr class="toprow"><td colspan="2">Operatsioonid</td></tr>
-		<tr>
-			<td>Muuda staatust</td>
-			<td>
-				<form method="POST">
-					$statusesSelector
-					<input class="button" type="submit" name="changestatus" value="Muuda" />
-				</form>
-			</td>
-		</tr>
-		<tr><td colspan="2"><a href="{$editLink}">Muuda andmeid</a></td></tr>
-		<tr><td colspan="2"><a href="{$usersLink}">Kasutajate haldus</a></td></tr>
-		<tr><td colspan="2"><a href="{$serversLink}">Mänguserverite haldus</a></td></tr>
-	</table>
+	private function genTeamAccountForm($name, $website, $email, 
+			$status, $applicationID) {
+		$applicationArg = (empty($applicationID) ? '' : 
+				'&amp;application=' . $applicationID);
+		$statusSelector = generateFormSelector(TeamAccount::db_getStatuses(), 
+				'teamstatus', 'nimetus', $status);
+		return <<<ENDCONTENT
+	<div class="content">
+	<form action="index.php?employee=TeamAccounts&amp;action=new{$applicationArg}" method="post">
+		Rühma nimi:<br />
+		<input type="text" name="teamname" value="{$name}" /><br />
+		Rühma veebileht:<br />
+		<input type="text" name="teamwebsite" value="{$website}" /><br />
+		Rühma kontaktmeil:<br />
+		<input type="text" name="teamemail" value="{$email}" /><br />
+		Rühma staatus:<br />
+		{$statusSelector}<br />
+		<input class="button" type="submit" name="createta" value="Loo rühmakonto" />
+	</form>
+	</div>
 ENDCONTENT;
-		} else {
-			self::addMessage(new Message(
-					'Sellise ID-ga rühmakonto puudub', 'error'));
-		}
 	}
 	
-	public function actionList() {
+	private function actionList() {
 		$this->setTitle('Rühmakontode nimekiri');
 		$this->content .= $this->genTeamAccountsTable();
 	}
 	
-	public function genTeamAccountsTable() {
+	private function genTeamAccountsTable() {
 		$table = <<<ENDCONTENT
 <table>
 	<tr class="toprow">
@@ -171,26 +143,126 @@ ENDCONTENT;
 		return $table;
 	}
 	
-	public function genTeamAccountForm($name, $website, $email, 
-			$status, $applicationID) {
-		$applicationArg = (empty($applicationID) ? '' : 
-				'&amp;application=' . $applicationID);
-		$statusSelector = generateFormSelector(TeamAccount::db_getStatuses(), 
-				'teamstatus', 'nimetus', $status);
-		return <<<ENDCONTENT
-	<div class="content">
-	<form action="index.php?employee=TeamAccounts&amp;action=new{$applicationArg}" method="post">
-		Rühma nimi:<br />
-		<input type="text" name="teamname" value="{$name}" /><br />
-		Rühma veebileht:<br />
-		<input type="text" name="teamwebsite" value="{$website}" /><br />
-		Rühma kontaktmeil:<br />
-		<input type="text" name="teamemail" value="{$email}" /><br />
-		Rühma staatus:<br />
-		{$statusSelector}<br />
-		<input class="button" type="submit" name="createta" value="Loo rühmakonto" />
-	</form>
-	</div>
+	private function actionView() {
+		$this->setTitle('Rühmakonto vaade');
+		if (!empty($this->get['id']) && is_numeric($this->get['id']) && 
+				($id = intval($this->get['id'])) > 0) {
+			$teamAccount = new TeamAccount($id);
+			if (!empty($this->get['created'])) {
+				self::addMessage(new Message('Rühmakonto loodi edukalt!'));
+			}
+			$this->viewTeamAccount($teamAccount);
+		} else {
+			self::addMessage(new Message(
+					'Rühmakonto ID puudub või ei ole number.', 'error'));
+		}
+	}
+	
+	private function viewTeamAccount($teamAccount) {
+		$data = $teamAccount->db_getData();
+		if (!empty($data)) {
+			$statusClass = '';
+			if ($data['rühmakonto_staatus_id'] === 1) {
+				$statusClass = 'activated';
+			} else if ($data['rühmakonto_staatus_id'] === 2) {
+				$statusClass = 'deactivated';
+			}
+			$statuses = TeamAccount::db_getStatuses();
+			$statusesSelector = generateFormSelector($statuses, 
+					'teamstatus', 'nimetus');
+			$linkBase = 'index.php?employee=TeamAccounts&amp;id=' . 
+					$teamAccount->getID() . '&amp;action=';
+			$editLink = $linkBase . 'edit';
+			$addUserLink = $linkBase . 'adduser';
+			$addServerLink = $linkBase . 'addserver';
+			$this->content .= <<<ENDCONTENT
+	<table class="content">
+		<tr class="toprow"><td colspan="3">Rühma andmed</td></tr>
+		<tr><td>Nimi</td><td colspan="2">{$data['rühma_nimi']}</td></tr>
+		<tr><td>Veebileht</td><td colspan="2">{$data['rühma_veebileht']}</td></tr>
+		<tr><td>Kontaktmeil</td><td colspan="2">{$data['kontaktmeil']}</td></tr>
+		<tr><td>Staatus</td><td colspan="2" class="{$statusClass}">{$data['staatus']}</td></tr>
+		<tr class="toprow"><td colspan="3">Operatsioonid</td></tr>
+		<tr>
+			<td>Muuda staatust</td>
+			<td colspan="2">
+				<form method="POST">
+					$statusesSelector
+					<input class="button" type="submit" name="changestatus" value="Muuda" />
+				</form>
+			</td>
+		</tr>
+		<tr><td colspan="3"><a href="{$editLink}">Muuda andmeid</a></td></tr>
 ENDCONTENT;
+			$this->genUsersRows($teamAccount, $addUserLink);
+			$this->genServersRows($teamAccount, $addServerLink);
+			$this->content .= '</table>';
+		} else {
+			self::addMessage(new Message(
+					'Sellise ID-ga rühmakonto puudub', 'error'));
+		}
+	}
+	
+	private function genUsersRows($teamAccount, $addUserLink) {
+		$this->content .= '<tr class="toprow"><td colspan="3">Kasutajad</td></tr>';
+		$users = $teamAccount->db_getUsers();
+		if (!empty($users)) {
+			foreach ($users as $user) {
+				$this->content .= <<<ENDCONTENT
+		<tr>
+			<td colspan="2">{$user['kasutajanimi']}</td>
+			<td>
+				<form method="POST">
+					<input type="hidden" name="userid" value="{$user['kasutaja_id']}" />
+					<input class="button" type="submit" name="deluser" value="Kustuta" />
+				</form>
+			</td>
+		</tr>
+ENDCONTENT;
+			}
+		} else {
+			$this->content .= '<tr><td colspan="3">Kasutajad puuduvad</td></tr>';
+		}
+		$this->content .= '<tr><td colspan="3"><a href="' .
+				$addUserLink . '">Lisa kasutaja</a></td></tr>';
+	}
+	
+	private function genServersRows($teamAccount, $addServerLink) {
+		$this->content .= 
+				'<tr class="toprow"><td colspan="3">Mänguserverid</td></tr>';
+		$servers = $teamAccount->db_getServers();
+		if (!empty($servers)) {
+			foreach ($servers as $server) {
+				$IPPort = $server['ip'] . ':' . $server['port'];
+				$this->content .= <<<ENDCONTENT
+		<tr>
+			<td>{$server['mängu_nimi']}</td>
+			<td>{$IPPort}</td>
+			<td>
+				<form method="POST">
+					<input type="hidden" name="serverid" value="{$server['mänguserver_id']}" />
+					<input class="button" type="submit" name="delserver" value="Kustuta" />
+				</form>
+			</td>
+		</tr>
+ENDCONTENT;
+			}
+		} else {
+			$this->content .= '<tr><td colspan="3">Mänguserverid puuduvad</td></tr>';
+		}
+		$this->content .= '<tr><td colspan="3"><a href="' .
+				$addServerLink . '">Lisa mänguserver</a></td></tr>';
+	}
+	
+	private function actionEdit() {
+		// TODO
+	}
+	
+	private function actionAddServer() {
+		// TODO
+	}
+	
+	private function actionAddUser() {
+		// TODO
 	}
 }
