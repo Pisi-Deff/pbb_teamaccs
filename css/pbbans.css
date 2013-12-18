@@ -14,7 +14,7 @@ a {
 
 header {
     background-color: #e1e9ef;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #b8bec3;
     padding: 5px;
 }
 #headermenu {
@@ -27,7 +27,7 @@ header {
 .sidebar {
     border-width: 0 0 1px 1px;
     border-style: solid;
-    border-color: black;
+    border-color: #b8bec3;
     float: right;
     margin-left: 5px;
     background-color: #f4faff;
@@ -36,7 +36,7 @@ header {
     height: 100%;
 }
 .sidebarheader {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #b8bec3;
     font-size: larger;
 }
 
@@ -45,7 +45,7 @@ h1 {
 }
 
 .message {
-    border: 1px solid black;
+    border: 1px solid #b8bec3;
     display: table;
     padding: 2px;
     margin: 2px auto;
@@ -78,23 +78,13 @@ table {
     margin: 5px;
     text-align: center;
     background-color: #FFFCF8;
-    border: 1px solid;
-}
-table, table td {
-    padding: 5px;
+    border-collapse: collapse;
 }
 .toprow {
     font-weight: 600;
     background-color: #FAF4E3;
 }
-.rowbordered td {
-    border: 1px solid;
-}
-.rowvbordered td {
-    border-left: 1px solid;
-    border-right: 1px solid;
-}
-.rowhbordered td {
-    border-top: 1px solid;
-    border-bottom: 1px solid;
+td {
+    padding: 8px;
+    border: 1px solid #b8bec3;
 }
