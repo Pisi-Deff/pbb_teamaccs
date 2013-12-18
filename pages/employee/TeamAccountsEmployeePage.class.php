@@ -48,7 +48,7 @@ class TeamAccountsEmployeePage extends EmployeePage {
 			$status = (empty($this->post['teamstatus']) ? $status : 
 					$this->post['teamstatus']);
 			$teamAccount = TeamAccount::createNew($name, $website, 
-					$email, $status, $application->getID());
+					$email, $status, $applicationID);
 			if ($teamAccount !== null) {
 				redirectLocal('index.php?employee=TeamAccounts&action=view&created=1&id=' . 
 						$teamAccount->getID());
