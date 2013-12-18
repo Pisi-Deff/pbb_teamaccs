@@ -6,13 +6,17 @@ class Server {
 		$this->id = $id;
 	}
 	
+	public function getID() {
+		return $this->id;
+	}
+	
 	public function db_confirm() {
 		try {
 			$dbh = Database::getInstance()->getDatabaseHandle();
 			$stmt = $dbh->prepare('SELECT f_kinnita_mänguserver (?)');
 			$stmt->execute(array($this->id));
 		} catch (PDOException $e) {
-			Page::addMessage(new Message($e->getMessage(), 'error'));
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
 		}
 	}
 	
@@ -23,7 +27,7 @@ class Server {
 					'DELETE FROM Mänguserver WHERE Mänguserver_ID = ?');
 			$stmt->execute(array($this->id));
 		} catch (PDOException $e) {
-			Page::addMessage(new Message($e->getMessage(), 'error'));
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
 		}
 	}
 	
@@ -44,7 +48,7 @@ class Server {
 				$servers[$row['mänguserver_id']] = $row;
 			}
 		} catch (PDOException $e) {
-			Page::addMessage(new Message($e->getMessage(), 'error'));
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
 		}
 		return $servers;
 	}
@@ -59,7 +63,7 @@ class Server {
 				$servers[$row['mänguserver_id']] = $row;
 			}
 		} catch (PDOException $e) {
-			Page::addMessage(new Message($e->getMessage(), 'error'));
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
 		}
 		return $servers;
 	}

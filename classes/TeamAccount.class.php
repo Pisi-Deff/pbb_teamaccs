@@ -22,7 +22,7 @@ class TeamAccount {
 			$stmt->execute(array($this->id));
 			$result = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch (PDOException $e) {
-			Page::addMessage(new Message($e->getMessage(), 'error'));
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
 		}
 		return $result;
 	}
@@ -45,7 +45,7 @@ class TeamAccount {
 			$stmt->execute(array($name, $website, $email, $status, $applicationID));
 			$result = $stmt->fetch(PDO::FETCH_NUM)[0];
 		} catch (PDOException $e) {
-			Page::addMessage(new Message($e->getMessage(), 'error'));
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
 		}
 		return $result;
 	}
@@ -59,7 +59,7 @@ class TeamAccount {
 				$teamAccounts[$row['rühmakonto_id']] = $row;
 			}
 		} catch (PDOException $e) {
-			Page::addMessage(new Message($e->getMessage(), 'error'));
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
 		}
 		return $teamAccounts;
 	}
@@ -73,7 +73,7 @@ class TeamAccount {
 				$statuses[$row['rühmakonto_staatus_id']] = $row;
 			}
 		} catch (PDOException $e) {
-			Page::addMessage(new Message($e->getMessage(), 'error'));
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
 		}
 		return $statuses;
 	}
