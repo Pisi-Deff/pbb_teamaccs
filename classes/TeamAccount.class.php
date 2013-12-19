@@ -75,6 +75,17 @@ class TeamAccount {
 		return $comments;
 	}
 	
+	public function db_changeStatus($newStatus) {
+		try {
+			$dbh = Database::getInstance()->getDatabaseHandle();
+			$stmt = $dbh->prepare('UPDATE Rühmakonto SET Rühmakonto_staatus_ID = ? ' .
+					'WHERE Rühmakonto_ID = ?');
+			$stmt->execute(array($newStatus, $this->getID()));
+		} catch (PDOException $e) {
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
+		}
+	}
+	
 	public static function createNew($name, $website, $email, $status,
 			$applicationID = null) {
 		$id = self::db_create($name, $website, $email, $status, $applicationID);

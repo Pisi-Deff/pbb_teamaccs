@@ -154,6 +154,9 @@ ENDCONTENT;
 			if (!empty($this->get['created'])) {
 				self::addMessage(new Message('Rühmakonto loodi edukalt!'));
 			}
+			if (!empty($this->post['changestatus'])) {
+				$teamAccount->db_changeStatus($this->post['teamstatus']);
+			}
 			$this->viewTeamAccount($teamAccount);
 		} else {
 			self::addMessage(new Message(
