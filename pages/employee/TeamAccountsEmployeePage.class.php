@@ -163,11 +163,16 @@ ENDCONTENT;
 		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
 			if (!empty($this->get['created'])) {
 				self::addMessage(new Message('Rühmakonto loodi edukalt!'));
-			}
-			if (!empty($this->post['changestatus'])) {
+			} else if (!empty($this->post['changestatus']) &&
+					!empty($this->post['teamstatus'])) {
 				$teamAccount->db_changeStatus($this->post['teamstatus']);
+			} else if (!empty($this->post['deluser']) &&
+					!empty($this->post['userid'])) {
+				$teamAccount->removeUser($this->post['userid']);
+			} else if (!empty($this->post['delserver']) &&
+					!empty($this->post['serverid'])) {
+				$teamAccount->deleteServer(new Server($this->post['serverid']));
 			}
-			// TODO: delete users & gameservers
 			$this->addReturnButtons($teamAccount);
 			$this->viewTeamAccount($teamAccount);
 		}

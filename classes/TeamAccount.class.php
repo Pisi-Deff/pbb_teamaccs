@@ -86,6 +86,14 @@ class TeamAccount {
 		}
 	}
 	
+	public function removeUser($userID) {
+		
+	}
+	
+	public function deleteServer($server) {
+		$server->db_delete($this);
+	}
+	
 	public static function createNew($name, $website, $email, $status,
 			$applicationID = null) {
 		$id = self::db_create($name, $website, $email, $status, $applicationID);

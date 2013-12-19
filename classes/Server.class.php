@@ -20,12 +20,19 @@ class Server {
 		}
 	}
 	
-	public function db_delete() {
+	public function db_delete($teamAccount = null) {
 		try {
 			$dbh = Database::getInstance()->getDatabaseHandle();
-			$stmt = $dbh->prepare(
-					'DELETE FROM Mänguserver WHERE Mänguserver_ID = ?');
-			$stmt->execute(array($this->id));
+			$sql = 'DELETE FROM Mänguserver WHERE Mänguserver_ID = ?';
+			if ($teamAccount !== null) {
+				$sql .= ' AND Rühmakonto_ID = ?';
+			}
+			$stmt = $dbh->prepare($sql);
+			$stmt->bindValue(1, $this->getID());
+			if ($teamAccount !== null) {
+				$stmt->bindValue(2, $teamAccount->getID());
+			}
+			$stmt->execute();
 		} catch (PDOException $e) {
 			Page::addMessage(new Message($e->errorInfo[2], 'error'));
 		}
