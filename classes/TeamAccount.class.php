@@ -86,6 +86,10 @@ class TeamAccount {
 		}
 	}
 	
+	public function addUser($user) {
+		return $user->db_addToTeamAccount($this);
+	}
+	
 	public function removeUser($user) {
 		$user->db_removeFromTeamAccount($this);
 	}

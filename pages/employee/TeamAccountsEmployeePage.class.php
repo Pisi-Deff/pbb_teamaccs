@@ -354,7 +354,28 @@ ENDCONTENT;
 		$this->setTitle('Lisa kasutaja');
 		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
 			$this->addReturnButtons($teamAccount, true);
-			// TODO
+			if ($teamAccount->db_getData() !== null) {
+				if (!empty($this->post['add'])) {
+					$userID = (empty($this->post['userid']) ? '' : $this->post['userid']);
+					if ($teamAccount->addUser(new User($userID))) {
+						redirectLocal('index.php?employee=TeamAccounts&action=view&id=' . 
+								$teamAccount->getID());
+					}
+				}
+				$userSelector = generateFormSelector(User::db_listTeamAccountless(), 
+						'userid', 'kasutajanimi');
+				$this->content .= <<<ENDCONTENT
+	<form class="content" method="POST">
+		Kasutaja<span class="required">*</span>:<br />
+		{$userSelector}<br />
+		<br />
+		<input class="button" type="submit" name="add" value="Lisa kasutaja" />
+	</form>
+ENDCONTENT;
+			} else {
+				self::addMessage(new Message(
+						'Sellise ID-ga rühmakonto puudub', 'error'));
+			}
 		}
 	}
 	
