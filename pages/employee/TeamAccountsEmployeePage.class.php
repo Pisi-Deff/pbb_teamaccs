@@ -16,11 +16,14 @@ class TeamAccountsEmployeePage extends EmployeePage {
 			case 'edit':
 				$this->actionEdit();
 				break;
+			case 'adduser':
+				$this->actionAddUser();
+				break;
 			case 'addserver':
 				$this->actionAddServer();
 				break;
-			case 'adduser':
-				$this->actionAddUser();
+			case 'addcomment':
+				$this->actionAddComment();
 				break;
 			default:
 				self::addMessage(new Message('Tundmatu tegevus!', 'error'));
@@ -175,6 +178,7 @@ ENDCONTENT;
 			$editLink = $linkBase . 'edit';
 			$addUserLink = $linkBase . 'adduser';
 			$addServerLink = $linkBase . 'addserver';
+			$addCommentLink = $linkBase . 'addcomment';
 			$this->content .= <<<ENDCONTENT
 	<table class="content">
 		<tr class="toprow"><td colspan="3">Rühma andmed</td></tr>
@@ -196,6 +200,7 @@ ENDCONTENT;
 ENDCONTENT;
 			$this->genUsersRows($teamAccount, $addUserLink);
 			$this->genServersRows($teamAccount, $addServerLink);
+			$this->genCommentsRows($teamAccount, $addCommentLink);
 			$this->content .= '</table>';
 		} else {
 			self::addMessage(new Message(
@@ -254,6 +259,29 @@ ENDCONTENT;
 				$addServerLink . '">Lisa mänguserver</a></td></tr>';
 	}
 	
+	private function genCommentsRows($teamAccount, $addCommentLink) {
+		$this->content .= 
+				'<tr class="toprow"><td colspan="3">Kommentaarid</td></tr>';
+		$comments = $teamAccount->db_getComments();
+		if (!empty($comments)) {
+			foreach ($comments as $comment) {
+				$this->content .= <<<ENDCONTENT
+		<tr>
+			<td colspan="2">{$comment['kasutajanimi']}</td>
+			<td>{$comment['lisamise_aeg']}</td>
+		</tr>
+		<tr>
+			<td colspan="3"><textarea disabled>{$comment['tekst']}</textarea></td>
+		</tr>
+ENDCONTENT;
+			}
+		} else {
+			$this->content .= '<tr><td colspan="3">Kommentaarid puuduvad</td></tr>';
+		}
+		$this->content .= '<tr><td colspan="3"><a href="' .
+				$addCommentLink . '">Lisa kommentaar</a></td></tr>';
+	}
+	
 	private function actionEdit() {
 		// TODO
 	}
@@ -263,6 +291,10 @@ ENDCONTENT;
 	}
 	
 	private function actionAddUser() {
+		// TODO
+	}
+	
+	private function actionAddComment() {
 		// TODO
 	}
 }

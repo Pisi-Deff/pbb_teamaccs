@@ -99,6 +99,13 @@ table {
     background-color: #FAF4E3;
 }
 td {
-    padding: 8px;
+    padding: 4px 15px 4px 15px;
     border: 1px solid #b8bec3;
+}
+
+textarea {
+    width: 100%;
+    color: black;
+    position: relative;
+    right: 3px;
 }
