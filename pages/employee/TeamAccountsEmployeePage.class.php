@@ -146,21 +146,30 @@ ENDCONTENT;
 		return $table;
 	}
 	
-	private function actionView() {
-		$this->setTitle('Rühmakonto vaade');
+	private function getTeamAccountFromGet() {
+		$teamAccount = null;
 		if (!empty($this->get['id']) && is_numeric($this->get['id']) && 
 				($id = intval($this->get['id'])) > 0) {
 			$teamAccount = new TeamAccount($id);
+		} else {
+			self::addMessage(new Message(
+					'Rühmakonto ID puudub või ei ole number.', 'error'));
+		}
+		return $teamAccount;
+	}
+	
+	private function actionView() {
+		$this->setTitle('Rühmakonto vaade');
+		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
 			if (!empty($this->get['created'])) {
 				self::addMessage(new Message('Rühmakonto loodi edukalt!'));
 			}
 			if (!empty($this->post['changestatus'])) {
 				$teamAccount->db_changeStatus($this->post['teamstatus']);
 			}
+			// TODO: delete users & gameservers
+			$this->addReturnButtons($teamAccount);
 			$this->viewTeamAccount($teamAccount);
-		} else {
-			self::addMessage(new Message(
-					'Rühmakonto ID puudub või ei ole number.', 'error'));
 		}
 	}
 	
@@ -293,18 +302,44 @@ ENDCONTENT;
 	}
 	
 	private function actionEdit() {
-		// TODO
+		$this->setTitle('Muuda rühmakonto andmeid');
+		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
+			$this->addReturnButtons($teamAccount, true);
+			// TODO
+		}
 	}
 	
 	private function actionAddServer() {
-		// TODO
+		$this->setTitle('Lisa mänguserver');
+		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
+			$this->addReturnButtons($teamAccount, true);
+			// TODO
+		}
 	}
 	
 	private function actionAddUser() {
-		// TODO
+		$this->setTitle('Lisa kasutaja');
+		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
+			$this->addReturnButtons($teamAccount, true);
+			// TODO
+		}
 	}
 	
 	private function actionAddComment() {
-		// TODO
+		$this->setTitle('Lisa kommentaar');
+		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
+			$this->addReturnButtons($teamAccount, true);
+			// TODO
+		}
+	}
+	
+	private function addReturnButtons($teamAccount = null, $backToTeamAccount = false) {
+		if ($teamAccount !== null && $backToTeamAccount) {
+			$this->content .= 
+					'<a class="button" href="index.php?employee=TeamAccounts&amp;id=' .
+					$teamAccount->getID() . '&amp;action=view">Tagasi rühmakonto vaatesse</a>';
+		}
+		$this->content .= 
+				'<a class="button" href="index.php?employee=TeamAccounts">Tagasi rühmakontode nimekirja</a>';
 	}
 }
