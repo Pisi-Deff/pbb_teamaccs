@@ -20,18 +20,20 @@ class NewServersEmployeePage extends EmployeePage {
 	<tr class="toprow">
 		<td>IP:port</td>
 		<td>Mäng</td>
-		<td>Rühma nimi</td>
+		<td>Rühm</td>
 		<td></td>
 	</tr>
 ENDCONTENT;
 		$newServers = Server::db_getListNew();
 		if (!empty($newServers)) {
+			$teamLinkBase = 'index.php?employee=TeamAccounts&amp;action=view&amp;id=';
 			foreach ($newServers as $server) {
+				$teamLink = $teamLinkBase . $server['rühmakonto_id'];
 				$table .= <<<ENDCONTENT
 	<tr>
 		<td>{$server['server']}</td>
 		<td>{$server['mängu_nimi']}</td>
-		<td>{$server['rühma_nimi']}</td>
+		<td><a href="{$teamLink}">{$server['rühma_nimi']}</a></td>
 		<td>
 			<form method="POST">
 				<input type="hidden" name="serverid" value="{$server['mänguserver_id']}" />
