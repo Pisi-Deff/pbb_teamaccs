@@ -90,6 +90,7 @@ class TeamAccountsEmployeePage extends EmployeePage {
 		<input type="text" name="teamemail" value="{$email}" /><br />
 		Rühma staatus:<br />
 		{$statusSelector}<br />
+		<br />
 		<input class="button" type="submit" name="createta" value="Loo rühmakonto" />
 	</form>
 	</div>

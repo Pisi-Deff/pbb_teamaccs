@@ -33,6 +33,7 @@ class LogInPage extends Page {
 			<input type="text" name="username" /><br />
 			Parool:<br />
 			<input type="password" name="password" /><br />
+			<br />
 			<input class="button" type="submit" name="login" value="Logi sisse" />
 		</fieldset>
 	</form>
