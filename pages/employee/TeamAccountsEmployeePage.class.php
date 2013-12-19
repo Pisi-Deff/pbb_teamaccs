@@ -181,22 +181,22 @@ ENDCONTENT;
 			$addCommentLink = $linkBase . 'addcomment';
 			$this->content .= <<<ENDCONTENT
 	<table class="content">
-		<tr class="toprow"><td colspan="3">Rühma andmed</td></tr>
-		<tr><td>Nimi</td><td colspan="2">{$data['rühma_nimi']}</td></tr>
-		<tr><td>Veebileht</td><td colspan="2">{$data['rühma_veebileht']}</td></tr>
-		<tr><td>Kontaktmeil</td><td colspan="2">{$data['kontaktmeil']}</td></tr>
-		<tr><td>Staatus</td><td colspan="2" class="{$statusClass}">{$data['staatus']}</td></tr>
-		<tr class="toprow"><td colspan="3">Operatsioonid</td></tr>
+		<tr class="toprow"><td colspan="4">Rühma andmed</td></tr>
+		<tr><td>Nimi</td><td colspan="3">{$data['rühma_nimi']}</td></tr>
+		<tr><td>Veebileht</td><td colspan="3">{$data['rühma_veebileht']}</td></tr>
+		<tr><td>Kontaktmeil</td><td colspan="3">{$data['kontaktmeil']}</td></tr>
+		<tr><td>Staatus</td><td colspan="3" class="{$statusClass}">{$data['staatus']}</td></tr>
+		<tr class="toprow"><td colspan="4">Operatsioonid</td></tr>
 		<tr>
 			<td>Muuda staatust</td>
-			<td colspan="2">
+			<td colspan="3">
 				<form method="POST">
 					$statusesSelector
 					<input class="button" type="submit" name="changestatus" value="Muuda" />
 				</form>
 			</td>
 		</tr>
-		<tr><td colspan="3"><a href="{$editLink}">Muuda andmeid</a></td></tr>
+		<tr><td colspan="4"><a href="{$editLink}">Muuda andmeid</a></td></tr>
 ENDCONTENT;
 			$this->genUsersRows($teamAccount, $addUserLink);
 			$this->genServersRows($teamAccount, $addServerLink);
@@ -209,13 +209,13 @@ ENDCONTENT;
 	}
 	
 	private function genUsersRows($teamAccount, $addUserLink) {
-		$this->content .= '<tr class="toprow"><td colspan="3">Kasutajad</td></tr>';
+		$this->content .= '<tr class="toprow"><td colspan="4">Kasutajad</td></tr>';
 		$users = $teamAccount->db_getUsers();
 		if (!empty($users)) {
 			foreach ($users as $user) {
 				$this->content .= <<<ENDCONTENT
 		<tr>
-			<td colspan="2">{$user['kasutajanimi']}</td>
+			<td colspan="3">{$user['kasutajanimi']}</td>
 			<td>
 				<form method="POST">
 					<input type="hidden" name="userid" value="{$user['kasutaja_id']}" />
@@ -226,23 +226,30 @@ ENDCONTENT;
 ENDCONTENT;
 			}
 		} else {
-			$this->content .= '<tr><td colspan="3">Kasutajad puuduvad</td></tr>';
+			$this->content .= '<tr><td colspan="4">Kasutajad puuduvad</td></tr>';
 		}
-		$this->content .= '<tr><td colspan="3"><a href="' .
+		$this->content .= '<tr><td colspan="4"><a href="' .
 				$addUserLink . '">Lisa kasutaja</a></td></tr>';
 	}
 	
 	private function genServersRows($teamAccount, $addServerLink) {
 		$this->content .= 
-				'<tr class="toprow"><td colspan="3">Mänguserverid</td></tr>';
+				'<tr class="toprow"><td colspan="4">Mänguserverid</td></tr>';
 		$servers = $teamAccount->db_getServers();
 		if (!empty($servers)) {
 			foreach ($servers as $server) {
 				$IPPort = $server['ip'] . ':' . $server['port'];
+				$statusClass = '';
+				if ($server['mänguserveri_staatus_id'] === 1) {
+					$statusClass = 'deactivated';
+				} else if ($server['mänguserveri_staatus_id'] === 2) {
+					$statusClass = 'activated';
+				}
 				$this->content .= <<<ENDCONTENT
 		<tr>
-			<td>{$server['mängu_nimi']}</td>
 			<td>{$IPPort}</td>
+			<td>{$server['mängu_nimi']}</td>
+			<td class="{$statusClass}">{$server['staatus']}</td>
 			<td>
 				<form method="POST">
 					<input type="hidden" name="serverid" value="{$server['mänguserver_id']}" />
@@ -253,32 +260,32 @@ ENDCONTENT;
 ENDCONTENT;
 			}
 		} else {
-			$this->content .= '<tr><td colspan="3">Mänguserverid puuduvad</td></tr>';
+			$this->content .= '<tr><td colspan="4">Mänguserverid puuduvad</td></tr>';
 		}
-		$this->content .= '<tr><td colspan="3"><a href="' .
+		$this->content .= '<tr><td colspan="4"><a href="' .
 				$addServerLink . '">Lisa mänguserver</a></td></tr>';
 	}
 	
 	private function genCommentsRows($teamAccount, $addCommentLink) {
 		$this->content .= 
-				'<tr class="toprow"><td colspan="3">Kommentaarid</td></tr>';
+				'<tr class="toprow"><td colspan="4">Kommentaarid</td></tr>';
 		$comments = $teamAccount->db_getComments();
 		if (!empty($comments)) {
 			foreach ($comments as $comment) {
 				$this->content .= <<<ENDCONTENT
 		<tr>
 			<td colspan="2">{$comment['kasutajanimi']}</td>
-			<td>{$comment['lisamise_aeg']}</td>
+			<td colspan="2">{$comment['lisamise_aeg']}</td>
 		</tr>
 		<tr>
-			<td colspan="3"><textarea disabled>{$comment['tekst']}</textarea></td>
+			<td colspan="4"><textarea disabled>{$comment['tekst']}</textarea></td>
 		</tr>
 ENDCONTENT;
 			}
 		} else {
-			$this->content .= '<tr><td colspan="3">Kommentaarid puuduvad</td></tr>';
+			$this->content .= '<tr><td colspan="4">Kommentaarid puuduvad</td></tr>';
 		}
-		$this->content .= '<tr><td colspan="3"><a href="' .
+		$this->content .= '<tr><td colspan="4"><a href="' .
 				$addCommentLink . '">Lisa kommentaar</a></td></tr>';
 	}
 	
