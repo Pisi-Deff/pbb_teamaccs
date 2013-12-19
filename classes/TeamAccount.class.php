@@ -86,8 +86,8 @@ class TeamAccount {
 		}
 	}
 	
-	public function removeUser($userID) {
-		
+	public function removeUser($user) {
+		$user->db_removeUserFromTeamAccount($this);
 	}
 	
 	public function deleteServer($server) {

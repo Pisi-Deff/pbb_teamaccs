@@ -168,7 +168,7 @@ ENDCONTENT;
 				$teamAccount->db_changeStatus($this->post['teamstatus']);
 			} else if (!empty($this->post['deluser']) &&
 					!empty($this->post['userid'])) {
-				$teamAccount->removeUser($this->post['userid']);
+				$teamAccount->removeUser(new User($this->post['userid']));
 			} else if (!empty($this->post['delserver']) &&
 					!empty($this->post['serverid'])) {
 				$teamAccount->deleteServer(new Server($this->post['serverid']));
