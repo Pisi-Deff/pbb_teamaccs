@@ -74,24 +74,36 @@ class TeamAccountsEmployeePage extends EmployeePage {
 	}
 	
 	private function genTeamAccountForm($name, $website, $email, 
-			$status, $applicationID) {
-		$applicationArg = (empty($applicationID) ? '' : 
-				'&amp;application=' . $applicationID);
-		$statusSelector = generateFormSelector(TeamAccount::db_getStatuses(), 
-				'teamstatus', 'nimetus', $status);
+			$status, $applicationID, $creation = true) {
+		if ($creation) {
+			$action = 'index.php?employee=TeamAccounts&amp;action=new';
+			if (!empty($applicationID)) {
+				$action .= '&amp;application=' . $applicationID;
+			}
+			$statusSelector = generateFormSelector(TeamAccount::db_getStatuses(), 
+					'teamstatus', 'nimetus', $status);
+			$statusInput = 'Rühma staatus<span class="required">*</span>:<br />' .
+					$statusSelector . '<br />';
+			$submitName = 'createta';
+			$submitLabel = 'Loo rühmakonto';
+		} else {
+			$action = '';
+			$statusInput = '';
+			$submitName = 'editta';
+			$submitLabel = 'Muuda rühmakontot';
+		}
 		return <<<ENDCONTENT
 	<div class="content">
-	<form action="index.php?employee=TeamAccounts&amp;action=new{$applicationArg}" method="post">
+	<form action="{$action}" method="post">
 		Rühma nimi<span class="required">*</span>:<br />
 		<input type="text" name="teamname" value="{$name}" required /><br />
 		Rühma veebileht:<br />
 		<input type="text" name="teamwebsite" value="{$website}" /><br />
 		Rühma kontaktmeil<span class="required">*</span>:<br />
 		<input type="text" name="teamemail" value="{$email}" required /><br />
-		Rühma staatus<span class="required">*</span>:<br />
-		{$statusSelector}<br />
+		{$statusInput}
 		<br />
-		<input class="button" type="submit" name="createta" value="Loo rühmakonto" />
+		<input class="button" type="submit" name="{$submitName}" value="{$submitLabel}" />
 	</form>
 	</div>
 ENDCONTENT;
@@ -320,7 +332,29 @@ ENDCONTENT;
 		$this->setTitle('Muuda rühmakonto andmeid');
 		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
 			$this->addReturnButtons($teamAccount, true);
-			// TODO
+			if (($data = $teamAccount->db_getData()) !== null) {
+				$name = $data['rühma_nimi'];
+				$website = $data['rühma_veebileht'];
+				$email = $data['kontaktmeil'];
+				if (!empty($this->post['editta'])) {
+					$name = (empty($this->post['teamname']) ? null : 
+							$this->post['teamname']);
+					$website = (empty($this->post['teamwebsite']) ? null : 
+							$this->post['teamwebsite']);
+					$email = (empty($this->post['teamemail']) ? null : 
+							$this->post['teamemail']);
+					if ($teamAccount->db_editData($name, $website, $email)) {
+						redirectLocal(
+								'index.php?employee=TeamAccounts&action=view&id=' . 
+								$teamAccount->getID());
+					}
+				}
+				$this->content .= $this->genTeamAccountForm($name, $website, 
+						$email, null, null, false);
+			} else {
+				self::addMessage(new Message(
+						'Sellise ID-ga rühmakonto puudub', 'error'));
+			}
 		}
 	}
 	

@@ -27,6 +27,23 @@ class TeamAccount {
 		return $result;
 	}
 	
+	public function db_editData($name, $website, $email) {
+		var_dump($website);
+		$success = false;
+		try {
+			$dbh = Database::getInstance()->getDatabaseHandle();
+			$stmt = $dbh->prepare('UPDATE Rühmakonto SET ' .
+					'rühma_nimi = ?, ' .
+					'rühma_veebileht = ?, ' .
+					'kontaktmeil = ? ' .
+					'WHERE Rühmakonto_ID = ?');
+			$success = $stmt->execute(array($name, $website, $email, $this->getID()));
+		} catch (PDOException $e) {
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
+		}
+		return $success;
+	}
+	
 	public function db_getUsers() {
 		$users = array();
 		try {
