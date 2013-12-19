@@ -2,7 +2,7 @@
 
 function generateFormSelector($options, $elementID,
 			$textAttribute, $selectedID = null) {
-	$selector = '<select name="' . $elementID . '">';
+	$selector = '<select name="' . $elementID . '" required>';
 	$selector .= generateFormSelectorChoices($options, $textAttribute, $selectedID);
 	$selector .= '</select>';
 	return $selector;

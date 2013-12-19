@@ -82,13 +82,13 @@ class TeamAccountsEmployeePage extends EmployeePage {
 		return <<<ENDCONTENT
 	<div class="content">
 	<form action="index.php?employee=TeamAccounts&amp;action=new{$applicationArg}" method="post">
-		Rühma nimi:<br />
-		<input type="text" name="teamname" value="{$name}" /><br />
+		Rühma nimi<span class="required">*</span>:<br />
+		<input type="text" name="teamname" value="{$name}" required /><br />
 		Rühma veebileht:<br />
 		<input type="text" name="teamwebsite" value="{$website}" /><br />
-		Rühma kontaktmeil:<br />
-		<input type="text" name="teamemail" value="{$email}" /><br />
-		Rühma staatus:<br />
+		Rühma kontaktmeil<span class="required">*</span>:<br />
+		<input type="text" name="teamemail" value="{$email}" required /><br />
+		Rühma staatus<span class="required">*</span>:<br />
 		{$statusSelector}<br />
 		<br />
 		<input class="button" type="submit" name="createta" value="Loo rühmakonto" />
@@ -319,16 +319,34 @@ ENDCONTENT;
 		$this->setTitle('Lisa mänguserver');
 		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
 			$this->addReturnButtons($teamAccount, true);
-			$this->content .= <<<ENDCONTENT
-	<form class="content">
-		IP:<br />
-		<input type="text" name="ip" /><br />
-		Port:<br />
-		<input type="number" name="port" min="1" max="65535" /><br />
+			if ($teamAccount->db_getData() !== null) {
+				if (!empty($this->post['add'])) {
+					$ip = (empty($this->post['ip']) ? '' : $this->post['ip']);
+					$port = (empty($this->post['port']) ? '' : $this->post['port']);
+					$game = (empty($this->post['game']) ? '' : $this->post['game']);
+					if ($teamAccount->createServer($ip, $port, $game)) {
+						redirectLocal('index.php?employee=TeamAccounts&action=view&id=' . 
+								$teamAccount->getID());
+					}
+				}
+				$gameSelector = generateFormSelector(Game::db_getGames(), 
+						'game', 'mängu_nimi');
+				$this->content .= <<<ENDCONTENT
+	<form class="content" method="POST">
+		IP<span class="required">*</span>:<br />
+		<input type="text" name="ip" required /><br />
+		Port<span class="required">*</span>:<br />
+		<input type="number" name="port" pattern="[0-9]{1,5}" min="1" max="65535" required /><br />
+		Mäng<span class="required">*</span>:<br />
+		{$gameSelector}<br />
 		<br />
 		<input class="button" type="submit" name="add" value="Lisa mänguserver" />
 	</form>
 ENDCONTENT;
+			} else {
+				self::addMessage(new Message(
+						'Sellise ID-ga rühmakonto puudub', 'error'));
+			}
 		}
 	}
 	

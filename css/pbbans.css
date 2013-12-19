@@ -138,3 +138,7 @@ textarea {
 a.button {
     color: black;
 }
+
+span.required {
+    color: red;
+}

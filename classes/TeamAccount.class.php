@@ -90,6 +90,10 @@ class TeamAccount {
 		$user->db_removeFromTeamAccount($this);
 	}
 	
+	public function createServer($ip, $port, $game) {
+		return Server::db_createNew($this, $ip, $port, $game);
+	}
+	
 	public function deleteServer($server) {
 		$server->db_delete($this);
 	}

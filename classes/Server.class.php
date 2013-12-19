@@ -38,6 +38,20 @@ class Server {
 		}
 	}
 	
+	public static function db_createNew($teamAccount, $ip, $port, $game) {
+		$success = false;
+		try {
+			$dbh = Database::getInstance()->getDatabaseHandle();
+			$stmt = $dbh->prepare('INSERT INTO Mänguserver ' .
+					'(ip, port, mängu_lühinimi, rühmakonto_id) ' .
+					'VALUES (?, ?, ?, ?)');
+			$success = $stmt->execute(array($ip, $port, $game, $teamAccount->getID()));
+		} catch (PDOException $e) {
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
+		}
+		return $success;
+	}
+	
 	public static function db_getListNew() {
 		$servers = array();
 		try {
