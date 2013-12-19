@@ -175,7 +175,7 @@ ENDCONTENT;
 			}
 			$statuses = TeamAccount::db_getStatuses();
 			$statusesSelector = generateFormSelector($statuses, 
-					'teamstatus', 'nimetus');
+					'teamstatus', 'nimetus', $data['rühmakonto_staatus_id']);
 			$linkBase = 'index.php?employee=TeamAccounts&amp;id=' . 
 					$teamAccount->getID() . '&amp;action=';
 			$editLink = $linkBase . 'edit';
@@ -241,7 +241,7 @@ ENDCONTENT;
 		$servers = $teamAccount->db_getServers();
 		if (!empty($servers)) {
 			foreach ($servers as $server) {
-				$IPPort = $server['ip'] . ':' . $server['port'];
+				$IPPort = $server['server'];
 				$statusClass = '';
 				if ($server['mänguserveri_staatus_id'] === 1) {
 					$statusClass = 'deactivated';

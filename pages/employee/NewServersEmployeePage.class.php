@@ -29,7 +29,7 @@ ENDCONTENT;
 			foreach ($newServers as $server) {
 				$table .= <<<ENDCONTENT
 	<tr>
-		<td>{$server['ip']}:{$server['port']}</td>
+		<td>{$server['server']}</td>
 		<td>{$server['mängu_nimi']}</td>
 		<td>{$server['rühma_nimi']}</td>
 		<td>
