@@ -102,6 +102,20 @@ class TeamAccount {
 		$server->db_delete($this);
 	}
 	
+	public function db_addComment($userID, $comment) {
+		$success = false;
+		try {
+			$dbh = Database::getInstance()->getDatabaseHandle();
+			$stmt = $dbh->prepare('INSERT INTO Rühmakonto_kommentaar ' .
+					'(Rühmakonto_ID, Kasutaja_ID, tekst) ' .
+					'VALUES (?, ?, ?)');
+			$success = $stmt->execute(array($this->getID(), $userID, $comment));
+		} catch (PDOException $e) {
+			Page::addMessage(new Message($e->errorInfo[2], 'error'));
+		}
+		return $success;
+	}
+	
 	public static function createNew($name, $website, $email, $status,
 			$applicationID = null) {
 		$id = self::db_create($name, $website, $email, $status, $applicationID);

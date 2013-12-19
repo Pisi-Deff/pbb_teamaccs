@@ -28,6 +28,10 @@ class Session {
 		session_destroy();
 	}
 	
+	public function getID() {
+		return (empty($_SESSION['pbb_userID']) ? null : $_SESSION['pbb_userID']);
+	}
+	
 	public function getUsername() {
 		if (!empty($_SESSION['pbb_username'])) {
 			return $_SESSION['pbb_username'];

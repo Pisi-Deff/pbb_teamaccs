@@ -394,7 +394,27 @@ ENDCONTENT;
 		$this->setTitle('Lisa kommentaar');
 		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
 			$this->addReturnButtons($teamAccount, true);
-			// TODO
+			if ($teamAccount->db_getData() !== null) {
+				if (!empty($this->post['add'])) {
+					$comment = (empty($this->post['comment']) ? '' : $this->post['comment']);
+					if ($teamAccount->db_addComment($this->session->getID(), $comment)) {
+						redirectLocal(
+								'index.php?employee=TeamAccounts&action=view&commentadded=1&id=' . 
+								$teamAccount->getID());
+					}
+				}
+				$this->content .= <<<ENDCONTENT
+	<form class="content" method="POST">
+		Kommentaar<span class="required">*</span>:<br />
+		<textarea name="comment"></textarea><br />
+		<br />
+		<input class="button" type="submit" name="add" value="Lisa kommentaar" />
+	</form>
+ENDCONTENT;
+			} else {
+				self::addMessage(new Message(
+						'Sellise ID-ga rühmakonto puudub', 'error'));
+			}
 		}
 	}
 	
