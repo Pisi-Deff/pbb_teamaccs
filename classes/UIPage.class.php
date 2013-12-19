@@ -8,7 +8,7 @@ abstract class UIPage extends Page {
 		return <<<ENDCONTENT
 
 <header>
-	<span id="username">Kasutaja: {$this->user->getUsername()}</span>
+	<span id="username">Kasutaja: {$this->session->getUsername()}</span>
 	<nav id="headermenu">
 		<a class="headerlink" href="index.php">Esileht</a>
 		<a class="headerlink" href="index.php?employee=Index">Töötajapaneel</a>

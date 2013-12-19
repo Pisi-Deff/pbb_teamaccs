@@ -1,5 +1,5 @@
 <?php
-class User {
+class Session {
 	private $jobs = null;
 	
 	public function isLoggedIn() {

@@ -26,10 +26,10 @@ $get = clean($_GET);
 $post = clean($_POST);
 
 $db = Database::getInstance();
-$user = new User();
-$pageFactory = new PageFactory($user);
+$session = new Session();
+$pageFactory = new PageFactory($session);
 
-if (!$user->isLoggedIn()) {
+if (!$session->isLoggedIn()) {
 	$get['page'] = 'LogIn';
 }
 $page = $pageFactory->getPage($get, $post);

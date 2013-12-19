@@ -8,7 +8,7 @@ class LogInPage extends Page {
 				self::addMessage(new Message(
 						'Kasutajanimi või parool sisestamata.', 'error'));
 			} else {
-				$loginSuccess = $this->user->tryLogIn(
+				$loginSuccess = $this->session->tryLogIn(
 						$this->post['username'], $this->post['password']);
 				if ($loginSuccess) {
 					redirectLocal();
@@ -18,7 +18,7 @@ class LogInPage extends Page {
 				}
 			}
 			if (!$loginSuccess) {
-				$this->user->logOut();
+				$this->session->logOut();
 			}
 		}
 		$this->content .= $this->getLoginForm();

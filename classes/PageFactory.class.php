@@ -1,9 +1,9 @@
 <?php
 class PageFactory {
-	private $user;
+	private $session;
 	
-	public function __construct($user) {
-		$this->user = $user;
+	public function __construct($session) {
+		$this->session = $session;
 	}
 	public function getPage($get, $post) {
 		$page = null;
@@ -15,10 +15,10 @@ class PageFactory {
 		}
 		if ($pageName !== null && class_exists($pageName)
 				&& (new ReflectionClass($pageName))->isInstantiable()) {
-			$page = new $pageName($this->user, $get, $post);
+			$page = new $pageName($this->session, $get, $post);
 		}
 		if ($page === null) {
-			$page = new IndexPage($this->user, $get, $post);
+			$page = new IndexPage($this->session, $get, $post);
 		}
 		return $page;
 	}

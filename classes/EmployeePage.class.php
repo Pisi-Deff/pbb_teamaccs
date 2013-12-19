@@ -5,7 +5,7 @@ abstract class EmployeePage extends UIPage {
 	
 	public function setup() {
 		$this->baseTitle = $this->baseTitleEmployee . ' - ' . $this->baseTitle;
-		if (!$this->user->isEmployed()) {
+		if (!$this->session->isEmployed()) {
 			self::addMessage(new Message('Ligipääs keelatud!', 'error'));
 			return;
 		}
@@ -17,7 +17,7 @@ abstract class EmployeePage extends UIPage {
 	
 	public function getSidebar() {
 		$sidebar = '<nav class="sidebar">';
-		$jobs = $this->user->getJobs();
+		$jobs = $this->session->getJobs();
 		if (!empty($jobs[1])) {
 			$sidebar .= $this->genTeamAccountManagerSidebar($jobs[1]);
 		}

@@ -5,13 +5,13 @@ abstract class Page {
 	protected $content = '';
 	private static $messages = array();
 	
-	protected $user;
+	protected $session;
 	
 	protected $get;
 	protected $post;
 	
-	public function __construct($user, $get, $post) {
-		$this->user = $user;
+	public function __construct($session, $get, $post) {
+		$this->session = $session;
 		$this->get = $get;
 		$this->post = $post;
 		$this->setup();
