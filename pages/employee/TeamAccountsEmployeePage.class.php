@@ -318,7 +318,16 @@ ENDCONTENT;
 		$this->setTitle('Lisa mänguserver');
 		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
 			$this->addReturnButtons($teamAccount, true);
-			// TODO
+			$this->content .= <<<ENDCONTENT
+	<form class="content">
+		IP:<br />
+		<input type="text" name="ip" /><br />
+		Port:<br />
+		<input type="number" name="port" min="1" max="65535" /><br />
+		<br />
+		<input class="button" type="submit" name="add" value="Lisa mänguserver" />
+	</form>
+ENDCONTENT;
 		}
 	}
 	
