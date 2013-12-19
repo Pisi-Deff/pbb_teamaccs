@@ -164,6 +164,12 @@ ENDCONTENT;
 		if (($teamAccount = $this->getTeamAccountFromGet()) !== null) {
 			if (!empty($this->get['created'])) {
 				self::addMessage(new Message('Rühmakonto loodi edukalt!'));
+			} else if (!empty($this->get['useradded'])) {
+				self::addMessage(new Message('Kasutaja lisatud!'));
+			} else if (!empty($this->get['serveradded'])) {
+				self::addMessage(new Message('Mänguserver lisatud!'));
+			} else if (!empty($this->get['commentadded'])) {
+				self::addMessage(new Message('Kommentaar lisatud!'));
 			} else if (!empty($this->post['changestatus']) &&
 					!empty($this->post['teamstatus'])) {
 				$teamAccount->db_changeStatus($this->post['teamstatus']);
@@ -194,9 +200,6 @@ ENDCONTENT;
 			$linkBase = 'index.php?employee=TeamAccounts&amp;id=' . 
 					$teamAccount->getID() . '&amp;action=';
 			$editLink = $linkBase . 'edit';
-			$addUserLink = $linkBase . 'adduser';
-			$addServerLink = $linkBase . 'addserver';
-			$addCommentLink = $linkBase . 'addcomment';
 			$this->content .= <<<ENDCONTENT
 	<table class="content">
 		<tr class="toprow"><td colspan="4">Rühma andmed</td></tr>
@@ -216,9 +219,9 @@ ENDCONTENT;
 		</tr>
 		<tr><td colspan="4"><a href="{$editLink}">Muuda andmeid</a></td></tr>
 ENDCONTENT;
-			$this->genUsersRows($teamAccount, $addUserLink);
-			$this->genServersRows($teamAccount, $addServerLink);
-			$this->genCommentsRows($teamAccount, $addCommentLink);
+			$this->genUsersRows($teamAccount, $linkBase);
+			$this->genServersRows($teamAccount, $linkBase);
+			$this->genCommentsRows($teamAccount, $linkBase);
 			$this->content .= '</table>';
 		} else {
 			self::addMessage(new Message(
@@ -226,7 +229,9 @@ ENDCONTENT;
 		}
 	}
 	
-	private function genUsersRows($teamAccount, $addUserLink) {
+	private function genUsersRows($teamAccount, $linkBase) {
+		$addUserLink = $linkBase . 'adduser';
+		$viewLink = $linkBase . 'view';
 		$this->content .= '<tr class="toprow"><td colspan="4">Kasutajad</td></tr>';
 		$users = $teamAccount->db_getUsers();
 		if (!empty($users)) {
@@ -235,7 +240,7 @@ ENDCONTENT;
 		<tr>
 			<td colspan="3">{$user['kasutajanimi']}</td>
 			<td>
-				<form method="POST">
+				<form method="POST" action="{$viewLink}">
 					<input type="hidden" name="userid" value="{$user['kasutaja_id']}" />
 					<input class="button" type="submit" name="deluser" value="Kustuta" />
 				</form>
@@ -250,7 +255,9 @@ ENDCONTENT;
 				$addUserLink . '">Lisa kasutaja</a></td></tr>';
 	}
 	
-	private function genServersRows($teamAccount, $addServerLink) {
+	private function genServersRows($teamAccount, $linkBase) {
+		$addServerLink = $linkBase . 'addserver';
+		$viewLink = $linkBase . 'view';
 		$this->content .= 
 				'<tr class="toprow"><td colspan="4">Mänguserverid</td></tr>';
 		$servers = $teamAccount->db_getServers();
@@ -269,7 +276,7 @@ ENDCONTENT;
 			<td>{$server['mängu_nimi']}</td>
 			<td class="{$statusClass}">{$server['staatus']}</td>
 			<td>
-				<form method="POST">
+				<form method="POST" action="{$viewLink}">
 					<input type="hidden" name="serverid" value="{$server['mänguserver_id']}" />
 					<input class="button" type="submit" name="delserver" value="Kustuta" />
 				</form>
@@ -284,7 +291,9 @@ ENDCONTENT;
 				$addServerLink . '">Lisa mänguserver</a></td></tr>';
 	}
 	
-	private function genCommentsRows($teamAccount, $addCommentLink) {
+	private function genCommentsRows($teamAccount, $linkBase) {
+		$addCommentLink = $linkBase . 'addcomment';
+		$viewLink = $linkBase . 'view';
 		$this->content .= 
 				'<tr class="toprow"><td colspan="4">Kommentaarid</td></tr>';
 		$comments = $teamAccount->db_getComments();
@@ -325,7 +334,8 @@ ENDCONTENT;
 					$port = (empty($this->post['port']) ? '' : $this->post['port']);
 					$game = (empty($this->post['game']) ? '' : $this->post['game']);
 					if ($teamAccount->createServer($ip, $port, $game)) {
-						redirectLocal('index.php?employee=TeamAccounts&action=view&id=' . 
+						redirectLocal(
+								'index.php?employee=TeamAccounts&action=view&serveradded=1&id=' . 
 								$teamAccount->getID());
 					}
 				}
@@ -358,7 +368,8 @@ ENDCONTENT;
 				if (!empty($this->post['add'])) {
 					$userID = (empty($this->post['userid']) ? '' : $this->post['userid']);
 					if ($teamAccount->addUser(new User($userID))) {
-						redirectLocal('index.php?employee=TeamAccounts&action=view&id=' . 
+						redirectLocal(
+								'index.php?employee=TeamAccounts&action=view&useradded=1&id=' . 
 								$teamAccount->getID());
 					}
 				}
