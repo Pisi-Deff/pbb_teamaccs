@@ -33,7 +33,7 @@ ENDCONTENT;
 		<td>{$websiteCell}</td>
 		<td>{$application['kasutajanimi']}</td>
 		<td>{$application['meil']}</td>
-		<td><a href="{$createTALink}">Loo rühmakonto</a></td>
+		<td><a class="button" href="{$createTALink}">Loo rühmakonto</a></td>
 	</tr>
 ENDCONTENT;
 			}

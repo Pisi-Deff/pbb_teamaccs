@@ -135,7 +135,7 @@ ENDCONTENT;
 		<td>{$websiteCell}</td>
 		<td>{$teamAccount['kontaktmeil']}</td>
 		<td class="{$statusClass}">{$teamAccount['staatus']}</td>
-		<td><a href="{$viewLink}">Vaata</a></td>
+		<td><a class="button" href="{$viewLink}">Vaata</a></td>
 	</tr>
 ENDCONTENT;
 			}	
